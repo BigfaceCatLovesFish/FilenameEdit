@@ -12,6 +12,8 @@ FilenameEdit::FilenameEdit(QWidget *parent)
     , ui(new Ui::FilenameEdit)
 {
     ui->setupUi(this);
+    ui->lineEdit->setPlaceholderText("to be deleted or replaced");
+    ui->lineEdit_2->setPlaceholderText("replace with");
 }
 
 FilenameEdit::~FilenameEdit()
@@ -98,3 +100,44 @@ void FilenameEdit::on_pushButton_clicked()
 
 }
 
+
+void FilenameEdit::on_pushButton_2_clicked()
+{
+    QString strToreplace,strTodelete;
+    QStringList strPathListNew = strPathList;
+
+    strToreplace = ui->lineEdit_2->text();
+    strTodelete = ui->lineEdit->text();
+
+    int i, j = strPathListNew.count();
+
+    for(i = 0; i < j; i++)
+    {
+        QString a = strPathListNew.at(i);
+        strPathListNew[i] = a.replace(strTodelete, strToreplace);
+        QFile::rename(strPathList.at(i), strPathListNew.at(i));
+    }
+
+    QStringList d1;
+
+    for (i = 0; i<j; i++)
+    {
+        QString a1 = strPathListNew.at(i);
+        QStringList a2 = a1.split("/");
+        a1 = a2.last();
+        d1.append(a1);
+    }
+
+    QString b2;
+    QString b1;
+
+    for (i = 0; i<j; i++)
+    {
+        b2 = d1.at(i);
+        b1 = b1.append("->");
+        b1 = b1.append(b2);
+        b1 = b1.append("\n");
+    }
+
+    ui->textEdit_2->setText(b1);
+}
